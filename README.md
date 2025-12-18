@@ -199,12 +199,7 @@ This repository documents the complete workflow of analog IC design from device 
 
 ## Authors
 
-| Name | Roll Number | Email |
-|------|-------------|-------|
-| Siddhant Shah | B23334 | b23334@students.iitmandi.ac.in |
-| Aman | T25121 | t25121@students.iitmandi.ac.in |
-| Omkar Sharan | T25132 | t25132@students.iitmandi.ac.in |
-
+Siddhant Shah - siddhantshah469@gmail.com
 ---
 
 ## References
