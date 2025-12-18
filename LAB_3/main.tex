@@ -1,0 +1,413 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% Packages
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{textgreek}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+
+% Bibliography formatting
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\author{
+\IEEEauthorblockN{Siddhant Shah (B23334)\textsuperscript{*}, 
+                  Aman (T25121)\textsuperscript{†}, 
+                  Omkar Sharan (T25132)\textsuperscript{‡}}
+\IEEEauthorblockA{\textsuperscript{*}b23334@students.iitmandi.ac.in \\
+                  \textsuperscript{†}t25121@students.iitmandi.ac.in \\
+                  \textsuperscript{‡}t25132@students.iitmandi.ac.in}
+}
+
+\begin{document}
+
+% ================= TITLE =================
+\title{Design and Analysis of CMOS Current Mirror Circuits}
+
+\maketitle
+
+% ================= ABSTRACT =================
+\begin{abstract}
+\noindent
+This paper presents a comprehensive analysis of various CMOS current mirror topologies and their performance characteristics. The study investigates fundamental architectures including the simple current mirror, basic cascode, cascode, regulated cascode, low-voltage cascoded current mirror (LV-CCM), and Wilson configurations. For each topology, DC analysis was performed to verify current mirroring accuracy, while AC analysis was conducted to evaluate output resistance. The results show the following output resistances: Simple Current Mirror -- 2.273~M$\Omega$, Basic Cascode -- 674.79~M$\Omega$, Cascode -- 586.27~M$\Omega$, Regulated Cascode -- 674.7866~M$\Omega$, LV-CCM -- 659.15~G$\Omega$, and Wilson -- 581.3141~M$\Omega$. All circuits were implemented using 180~nm CMOS technology with a 1.8~V supply and a 10~$\mu$A reference current. The progression from basic two-transistor mirrors to advanced feedback-controlled architectures demonstrates systematic improvements in output impedance, current matching accuracy, and voltage headroom. These findings provide valuable design insights for selecting appropriate current mirror topologies in modern analog integrated circuit applications.
+\end{abstract}
+
+% ================= KEYWORDS =================
+\begin{IEEEkeywords}
+Current mirror, cascode, Wilson mirror, LVCCM cascode, output resistance, CMOS analog circuits
+\end{IEEEkeywords}
+
+% ================= INTRODUCTION =================
+\section{Introduction}
+\noindent Current mirrors represent fundamental building blocks in analog integrated circuit design, serving critical roles in biasing networks, active loads, and current-mode signal processing \cite{razavi}. These circuits replicate reference currents with high precision while maintaining elevated output impedance, ensuring stable operation across diverse loading conditions. The progression from basic to advanced mirror topologies reflects continuous refinement in addressing fundamental limitations arising from channel length modulation, process variations, and voltage headroom constraints \cite{allen}.
+
+\noindent The primary challenge in current mirror implementation involves balancing multiple conflicting requirements: maximizing output resistance, minimizing voltage overhead, ensuring accurate current matching, and maintaining stability across process-voltage-temperature (PVT) variations \cite{carusone}. Simple mirrors suffer from limited output impedance due to channel length modulation effects, while advanced configurations employ cascode structures and feedback mechanisms to enhance performance, albeit at the expense of increased complexity and voltage requirements \cite{gray}.
+
+\noindent Contemporary analog systems demand current sources with megohm- to gigaohm-range output resistances to preserve signal integrity and maximize dynamic range. The evolution from basic two-transistor mirrors through cascode variants to sophisticated LV-CCM and Wilson topologies demonstrates systematic approaches to overcoming inherent transistor limitations \cite{baker}. Each architecture presents unique trade-offs between performance metrics, requiring careful selection based on application-specific constraints.
+
+\noindent This investigation examines six current mirror configurations (simple, basic cascode, cascode, regulated cascode, LV-CCM, and Wilson), in addition to an NMOS characterization circuit. Both qualitative and quantitative analyses are presented, focusing on circuit topology, operating principles, and expected performance. The study establishes design guidelines for topology selection in modern analog integrated circuits.
+
+% ================= CURRENT MIRROR TOPOLOGIES AND ANALYSIS =================
+\section{Current Mirror Topologies and Analysis}
+
+\subsection{NMOS Test Circuit}
+\noindent The NMOS test circuit provides fundamental characterization of transistor behavior, establishing baseline parameters for current mirror design. This configuration allows verification that the NMOS, when configured as a diode-connected load, operates in the saturation region under a reference current of 10~$\mu$A..
+
+\begin{figure}[h]
+    \centering
+    % Replace with actual circuit figure
+    \includegraphics[width=0.35\textwidth]{NMOS_Test_Circuit.eps}
+    \caption{NMOS Test Circuit Configuration}
+    \label{fig:nmos_test_circuit}
+\end{figure}
+
+\subsubsection{Component Description}
+\begin{itemize}
+    \item \textbf{Current Source ($I_{REF}$):} Provides constant 10~$\mu$A reference current for biasing the test transistor.
+    \item \textbf{NMOS Transistor (M1):} Device under test (DUT) with gate and drain connected (diode-connected configuration).
+    \item \textbf{Gate-Drain Connection:} Forces transistor into saturation region ($V_{GS} = V_{DS}$).
+    \item \textbf{Ground Connection:} Source terminal connected to ground (0~V reference).
+\end{itemize}
+
+\subsubsection{Operating Principle}
+\noindent 
+The diode-connected transistor automatically adjusts its gate voltage to conduct the forced current. The configuration establishes $V_{GS} = V_{DS}$, ensuring saturation operation when $V_{DS} > V_{GS} - V_{TH}$.
+
+\noindent The test circuit reveals fundamental transistor behavior with clear saturation characteristics above $V_{DS} = 0.7$~V.
+
+\subsection{Simple Current Mirror}
+\noindent
+The simple current mirror employs two matched transistors with shared gate connections, where the reference transistor operates in diode-connected mode to establish the bias voltage \cite{razavi}. This fundamental topology provides basic current replication with minimal component count.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{Simple_Current_Mirror_Circuit.eps}
+    \caption{Simple Current Mirror Circuit}
+    \label{fig:simple_current_mirror}
+\end{figure}
+
+\subsubsection{Circuit Components}
+\begin{itemize}
+    \item \textbf{Reference Current ($I_{REF}$):} Input current source (10~$\mu$A) that sets the mirror current.
+    \item \textbf{M1 (Reference Transistor):} Diode-connected NMOS establishing gate bias voltage.
+    \item \textbf{M2 (Mirror Transistor):} Output NMOS replicating the reference current.
+    \item \textbf{Common Gate Connection:} Ensures identical $V_{GS}$ for both transistors.
+\end{itemize}
+
+\subsubsection{Operating Principle}
+\noindent
+M1 converts the input current into a gate-source voltage ($V_{GS}$). M2 uses this voltage to generate the output current. For matched transistors with identical $V_{GS}$, the currents are theoretically equal \cite{razavi}:
+\[
+I_{OUT} = I_{REF} \times \frac{(W/L)_2}{(W/L)_1}
+\]
+
+\subsubsection{Performance Characteristics}
+\begin{itemize}
+    \item Output resistance: calculated as approximately 2.273~M$\Omega$
+    \item Minimum voltage headroom: 
+    \[
+    V_{MIN} = V_{GS} - V_{TH} = V_{DSAT}
+    \]
+    \item Simple implementation with only two transistors.
+\end{itemize}
+
+\subsubsection{Limitations}
+\begin{itemize}
+    \item Low output impedance due to channel length modulation.
+    \item Current matching degrades with output voltage variation.
+    \item Susceptible to threshold voltage mismatches.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{basic_current_mirror_dc.png}
+    \caption{Simple Current Mirror DC Analysis}
+    \label{fig:basic_current_mirror_dc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{basic_current_mirror_ac.png}
+    \caption{Simple Current Mirror AC Analysis}
+    \label{fig:basic_current_mirror_ac}
+\end{figure}
+
+\subsection{Basic Cascode Current Mirror}
+\noindent
+The basic cascode current mirror shown in Fig.~\ref{fig:basic_cascode} uses a diode-connected reference transistor (M1), a mirror/output transistor (M2) whose gate is tied to M1, and a cascode device (M3) stacked above M2. The cascode M3 is biased by a fixed gate voltage $V_{bias}$ to hold the drain of M2 at an approximately constant potential. This cascode action significantly reduces channel-length modulation of the output device and thereby improves current-source ideality \cite{gray,razavi,allen,carusone}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{Basic_Cascode_Current_Mirror_Circuit.eps}
+    \caption{Basic Cascode Current Mirror Circuit}
+    \label{fig:basic_cascode}
+\end{figure}
+
+\subsubsection{Circuit Components}
+\begin{itemize}
+    \item \textbf{M1 (Reference transistor):} Diode-connected NMOS that establishes $V_{GS1}$ for the reference branch.
+    \item \textbf{M2 (Output/mirror transistor):} Replicates the reference current; its gate is tied to M1.
+    \item \textbf{M3 (Output cascode):} Cascode device above M2 whose gate is set by $V_{bias}$ to shield M2 from output voltage swings.
+    \item \textbf{$I_{REF}$:} Reference current source (10~$\mu$A) that sets the operating point.
+    \item \textbf{$V_{bias}$:} Gate bias for the cascode M3; chosen to keep M3 and M2 in saturation.
+\end{itemize}
+
+\subsubsection{Operating Principle}
+\noindent The diode-connected M1 sets the gate voltage needed to conduct $I_{REF}$ \cite{razavi}. M2 reproduces this current at the output node. M3, biased at $V_{bias}$, maintains a nearly constant drain potential at M2, thereby reducing the sensitivity of the mirrored current to variations in $V_{DS}$ at the output node \cite{allen}. To first order, the small-signal output resistance of this single-cascode mirror can be approximated as
+\[
+r_{out}\;\approx\;g_{m3}\,r_{o3}\,r_{o2},
+\]
+where $g_{m3}$ and $r_{o3}$ are the transconductance and output resistance of the cascode device M3, and $r_{o2}$ is the intrinsic output resistance of M2 \cite{carusone}. This expression is approximate and intended to indicate the order-of-magnitude improvement obtained by cascoding.
+
+\subsubsection{Performance Characteristics}
+\begin{itemize}
+    \item Output resistance: calculated as approximately 674.79~M$\Omega$ (from simulation).
+    \item Minimum voltage headroom requirement: $V_{MIN} = 2 \cdot V_{DSAT}$ \cite{baker}.
+    \item Proper biasing: $V_{bias} = V_{GS3} + V_{DSAT2}$ to maintain both M2 and M3 in saturation \cite{palmisano}.
+    \item Improved current matching, enhanced PSRR, and reduced sensitivity to channel-length modulation compared to the simple mirror \cite{sackinger,rajput}.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{basic_cascode_current_mirror_dc.png}
+    \caption{Basic Cascode Current Mirror DC Analysis}
+    \label{fig:basic_cascode_current_mirror_dc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{basic_cascode_current_mirror_ac.png}
+    \caption{Basic Cascode Current Mirror AC Analysis}
+    \label{fig:basic_cascode_current_mirror_ac}
+\end{figure}
+
+\subsection{Cascode Current Mirror}
+\noindent
+The cascode current mirror extends the basic cascode idea into a complete mirroring system with improved output impedance and enhanced current matching \cite{gray,razavi}. In this topology, two diode-connected devices (M1 and M2) form the reference branch, while the output branch (M3 and M4) replicates the current with cascode shielding. The stacked configuration achieves impedance multiplication and minimizes channel-length modulation effects.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.25\textwidth]{Cascode_Current_Mirror.eps}
+    \caption{Cascode Current mirror Circuit}
+    \label{fig:cascode}
+\end{figure}
+
+\subsubsection{Circuit Components}
+\begin{itemize}
+    \item \textbf{M1 (Reference diode):} Diode-connected transistor driven by $I_{REF}$; establishes the gate-source voltage for M4.
+    \item \textbf{M2 (Reference cascode diode):} Diode-connected transistor stacked below M1; provides bias for M3.
+    \item \textbf{M3 (Output cascode):} Gate tied to M2, cascodes the output transistor to boost output resistance.
+    \item \textbf{M4 (Output mirror transistor):} Gate tied to M1; replicates the reference current into the output branch.
+\end{itemize}
+
+\subsubsection{Operating Principle}
+\noindent
+The reference branch (M1--M2) establishes two bias voltages: $V_{GS1}$ and $V_{GS2}$. These voltages are mirrored to the output branch (M3--M4), ensuring that M4 conducts the same current as M1 while M3 shields it from output voltage variations. This cascode stacking provides impedance multiplication and significantly reduces channel-length modulation. The small-signal output resistance can be approximated as
+\[
+r_{out} \;\approx\; (g_{m4} \cdot r_{o4}) \cdot r_{o3},
+\]
+indicating the boost in $r_{out}$ due to cascoding.
+
+\subsubsection{Performance Characteristics}
+\begin{itemize}
+    \item Output resistance: calculated as approximately 586.2728~M$\Omega$ (from simulation).
+    \item Minimum output voltage requirement: $V_{OUT,MIN} = 2V_{DSAT} + V_{TH}$.
+    \item Excellent current matching due to cascode shielding of M4.
+    \item Reduced systematic offset errors.
+    \item Improved power supply rejection ratio (PSRR).
+    \item Wide output voltage compliance range compared to the simple mirror.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{cascode_current_mirror_dc.png}
+    \caption{Cascode Current Mirror DC Analysis}
+    \label{fig:cascode_current_mirror_dc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{cascode_current_mirror_ac.png}
+    \caption{Cascode Current Mirror AC Analysis}
+    \label{fig:cascode_current_mirror_ac}
+\end{figure}
+
+\subsection{Regulated Cascode Current Mirror}
+\noindent
+The regulated cascode current mirror shown in Fig.~\ref{fig:regulated_cascode} is an enhanced current mirror topology that achieves extremely high output resistance and superior current copying accuracy \cite{gray,razavi}. Unlike the simple or basic cascode mirror, this design incorporates a local feedback loop using an auxiliary amplifier to regulate the drain voltage of the mirroring transistor, thereby minimizing errors due to channel-length modulation.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.35\textwidth]{Regulated_Cascode_Current_Mirror.eps}
+    \caption{Regulated cascode current mirror circuit}
+    \label{fig:regulated_cascode}
+\end{figure}
+
+\subsubsection{Circuit Components}
+\begin{itemize}
+    \item \textbf{M1 (Reference transistor):} Diode-connected NMOS biased with the reference current $I_{REF}$ to establish $V_{GS1}$.
+    \item \textbf{M2 (Mirror transistor):} Replicates the reference current at the output node; ideally $I_{OUT} = I_{REF}$.
+    \item \textbf{M3 (Regulating transistor):} Works in conjunction with the amplifier to maintain equal drain voltages for M1 and M2.
+    \item \textbf{Auxiliary amplifier:} Implemented as a common-source amplifier for simulation; provides feedback control.
+    \item \textbf{$I_{REF}$:} Reference current source that biases M1.
+\end{itemize}
+
+\subsubsection{Operating Principle}
+\noindent
+The operation of the regulated cascode mirror can be summarized as follows:
+\begin{enumerate}
+    \item \textbf{Reference setup:} M1 is diode-connected and biased by $I_{REF}$ to establish the reference $V_{GS1}$.
+    \item \textbf{Mirroring action:} M2, whose gate is tied to M1, replicates the reference current at the output.
+    \item \textbf{Regulation mechanism:} M3, together with the auxiliary amplifier, forms a control loop that forces the drain voltage of M1 and M2 to be equal. This ensures both devices remain in saturation.
+    \item \textbf{Output resistance enhancement:} The feedback action suppresses channel-length modulation effects, resulting in a much higher effective output resistance compared to simple, cascode, or Wilson mirrors.
+\end{enumerate}
+
+\subsubsection{Performance Characteristics}
+\begin{itemize}
+    \item Output resistance: calculated as approximately 674.786~M$\Omega$ (from simulation).
+    \item Theoretical output resistance is given by:
+    \[
+    R_{out} \;=\; r_{o2} + r_{o3} + (g_{mA}r_{oA} + 1)\, g_{m3} r_{o3} r_{o2},
+    \]
+    where $g_{mA}$ and $r_{oA}$ are the transconductance and output resistance of the auxiliary amplifier.
+    \item Excellent current matching due to regulated drain voltages.
+    \item Significantly reduced channel-length modulation error.
+    \item Superior PSRR and biasing stability compared to other mirrors.
+    \item Suitable for high-accuracy analog and mixed-signal circuit applications.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{regulated_cascode_current_mirror_dc.png}
+    \caption{Regulated Cascode Current Mirror DC Analysis}
+    \label{fig:regulated_cascode_current_mirror_dc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{regulated_cascode_current_mirror_ac.png}
+    \caption{Regulated Cascode Current Mirror AC Analysis}
+    \label{fig:regulated_cascode_current_mirror_ac}
+\end{figure}
+
+\subsection{Low Voltage Cascode Current Mirror(LV-CCM)}
+\noindent
+The LV-CCM employs feedback control to maximize output impedance while minimizing voltage overhead [6]. An amplifier maintains optimal biasing of the cascode transistor, ensuring operation at the edge of saturation for minimum headroom.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.35\textwidth]{LVCCM.eps}
+    \caption{Low voltage cascoded current mirror circuit}
+    \label{fig:regulated_cascode}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{LVCCM_dc.png}
+    \caption{Low Voltage Cascoded Current Mirror DC Analysis}
+    \label{fig:low_voltage_cascoded_current_mirror_dc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{LVCCM_ac.png}
+    \caption{Low Voltage Cascoded Current Mirror AC Analysis}
+    \label{fig:low_voltage_cascoded_current_mirror_ac}
+\end{figure}
+
+\subsubsection{Performance Characteristics}
+\begin{itemize}
+    \item Output resistance: calculated as approximately 659.150~G$\Omega$ (from simulation).
+    \item Theoretical output resistance is given by:
+    \[
+    R_{out} \;=\; g_{m4} r_{o4} r_{o3},
+    \]
+    \item Minimum output voltage requirement: $V_{OUT,MIN} = 2V_{DSAT}$.
+\end{itemize}
+
+\subsection{Wilson Current Mirror}
+\noindent
+The Wilson current mirror utilizes negative feedback to enhance output impedance and current matching [8]. The feedback loop systematically cancels errors arising from finite output resistance and threshold voltage mismatches.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{Wilson_Current_Mirror.eps}
+    \caption{Wilson current mirror circuit}
+    \label{fig:wilson_current_mirror}
+\end{figure}
+
+\subsubsection{Circuit Components}
+\begin{itemize}
+    \item \textbf{M1 (Reference transistor):} Diode-connected NMOS biased with the reference current $I_{REF}$ to establish the required $V_{GS1}$.
+    \item \textbf{M2 (Feedback transistor):} Forms part of the feedback loop, connected below M1, to regulate the drain voltage of M1 and ensure it remains in saturation.
+    \item \textbf{M3 (Feedback transistor):} Works in conjunction with M2, providing cascode action that stabilizes the drain of M1 and enhances output resistance.
+    \item \textbf{M4 (Output transistor):} Provides the mirrored output current $I_{OUT}$, which closely tracks $I_{REF}$ with high accuracy.
+\end{itemize}
+
+\subsubsection{Operating Principle}
+\begin{itemize}
+    \item \textbf{Reference Setup:} Transistor M1 is diode-connected and biased with $I_{REF}$ to generate the required gate–source voltage.
+    \item \textbf{Feedback Action:} Transistors M2 and M3 form a feedback loop that regulates the drain voltage of M1, keeping it in saturation.
+    \item \textbf{Output Current:} Transistor M4 delivers the output current, effectively mirroring $I_{REF}$ with improved accuracy due to cascode action.
+    \item \textbf{High Output Resistance:} The cascode feedback action of M2 and M3 significantly reduces channel-length modulation effects, thereby increasing the output resistance compared to a simple current mirror.
+\end{itemize}
+
+\subsubsection{Performance Characteristics}
+\begin{itemize}
+    \item Output resistance: calculated as approximately 581.3141~M$\Omega$ (from simulation).
+    \item Theoretical output resistance is given by:
+    \[
+    R_{out} = g_{m2} r_{o2} 
+    \left( \frac{g_{m3} r_{o3}}{g_{m4}} \right) 
+    + r_{o3} + \frac{1}{g_{m2}}
+    \]
+    \item Minimum output voltage requirement: $V_{OUT,MIN} = 2V_{DSAT} + V_{TH}$.
+    \item Noise contribution reduced at higher VGS $-$ VTH.
+    \item Improved linearity at higher currents versus simple mirror.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{wilson_dc.png}
+    \caption{Wilson Current Mirror DC Analysis}
+    \label{fig:wilson_current_mirror_dc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{wilson_ac.png}
+    \caption{Wilson Current Mirror AC Analysis}
+    \label{fig:wilson_current_mirror_ac}
+\end{figure}
+
+\section{Conclusion}
+\noindent
+This investigation successfully characterized five current mirror configurations, establishing comprehensive understanding of their circuit composition and operating principles. The NMOS test circuit provided fundamental transistor characterization methodology. The simple mirror demonstrated basic current replication with minimal complexity. The basic cascode achieved significant output impedance improvement through transistor stacking. The cascode mirror extended
+this concept to complete mirroring systems with enhanced matching. The LV-CCM cascode utilized feedback control for optimal performance with minimum voltage overhead. The Wilson mirror employed negative feedback for systematic error cancellation and superior matching accuracy.\\
+\noindent
+Each topology presents distinct advantages aligned with specific application requirements. The progression from simple to advanced architectures illustrates systematic approaches to overcoming fundamental transistor limitations. These results provide comprehensive design guidelines for current mirror selection in modern analog integrated circuits, enabling engineers to make informed decisions based on performance priorities and system constraints.
+% ================= REFERENCES =================
+\begin{thebibliography}{9}
+\bibitem{razavi} B. Razavi, \textit{Design of Analog CMOS Integrated Circuits}, 2nd ed. Boston, MA: McGraw-Hill, 2016.
+\bibitem{allen} P. E. Allen and D. R. Holberg, \textit{CMOS Analog Circuit Design}, 3rd ed. New York: Oxford University Press, 2012.
+\bibitem{carusone} T. C. Carusone, D. Johns, and K. Martin, \textit{Analog Integrated Circuit Design}, 2nd ed. Hoboken, NJ: John Wiley \& Sons, 2012.
+\bibitem{gray} P. R. Gray, P. J. Hurst, S. H. Lewis, and R. G. Meyer, \textit{Analysis and Design of Analog Integrated Circuits}, 5th ed. New York: John Wiley \& Sons, 2009.
+\bibitem{baker} R. J. Baker, \textit{CMOS: Circuit Design, Layout, and Simulation}, 3rd ed. Hoboken, NJ: IEEE Press, 2010.
+\bibitem{palmisano} G. Palmisano, G. Palumbo, and S. Pennisi, “High-performance and simple CMOS unity-gain amplifier,” \textit{IEEE Trans. Circuits Syst. I}, vol. 47, no. 3, pp. 406–410, Mar. 2000.
+\bibitem{sackinger} E. Sackinger and W. Guggenbuhl, “A high-swing, high-impedance MOS cascode circuit,” \textit{IEEE J. Solid-State Circuits}, vol. 25, no. 1, pp. 289–298, Feb. 1990.
+\bibitem{rajput} S. S. Rajput and S. S. Jamuar, “Low voltage analog circuit design techniques,” \textit{IEEE Circuits Syst. Mag.}, vol. 2, no. 1, pp. 24–39, 2002.
+\end{thebibliography}
+
+\end{document}
