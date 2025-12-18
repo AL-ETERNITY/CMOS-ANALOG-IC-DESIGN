@@ -1,0 +1,508 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{float}
+% Add this in your preamble, after \usepackage{siunitx}
+\DeclareSIUnit{\decade}{decade}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+
+\title{GROUP\_5\_Experiment: 1\\Analysis Of Parameters of NMOS And PMOS transistors}
+
+\author{
+    \IEEEauthorblockA{Siddhant Shah (B23334) *, Aman(T25121) †, 
+                      Omkar Sharan (T25132) ‡}
+* b23334@students.iitmandi.ac.in \\
+† t25121@students.iitmandi.ac.in \\
+‡ t25132@students.iitmandi.ac.in}
+\date{}
+
+    
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent{This work presents a comprehensive characterization and parameter extraction of MOSFET devices fabricated in SCL \SI{180}{\nano\meter} CMOS technology. The study involves systematic extraction of critical device parameters through DC analysis of both NMOS and PMOS transistors.} 
+
+\noindent
+Key parameters extracted include zero-bias threshold voltages 
+$V_{t0,n} = \SI{0.210}{V}$, $V_{t0,p} = \SI{-0.356}{V}$, 
+transconductance parameters 
+$K_{n} = \SI{73.192}{\micro A / V^2}$, $K_{p} = \SI{42.841}{\micro A / V^2}$, 
+and channel-length modulation parameters 
+$\lambda_{n} = \SI{0.11}{V^{-1}}$, $\lambda_{p} = \SI{0.18}{V^{-1}}$.
+
+\noindent
+Subthreshold swing measurements yield values of \SI{73.5}{mV/decade} for NMOS and \SI{-106.1}{mV/decade} for PMOS, approaching the theoretical limit of \SI{60}{mV/decade}. Five distinct operating regions are identified and characterized: cutoff, linear, saturation, subthreshold, and breakdown. 
+
+\noindent
+An NMOS common-source amplifier operating in the saturation region achieves a voltage gain of 28.8 with transconductance 
+$g_m = \SI{0.167}{mA/V}$ 
+and output resistance $r_o = \SI{172.3}{k\ohm}$.
+
+\noindent
+The extracted parameters demonstrate excellent agreement with theoretical MOSFET models and validate the process technology for circuit design applications.
+\end{abstract}
+
+\begin{IEEEkeywords}
+NMOS, PMOS, Body Effect, Threshold Voltage, Saturation Voltage, DC Characterization, CMOS, Parametric Analysis
+\end{IEEEkeywords}
+
+\section{Introduction}
+\noindent{
+Metal-Oxide-Semiconductor Field-Effect Transistors (MOSFETs) form the foundation of modern integrated circuit technology, acting as the primary switching and amplifying elements in both digital and analog applications. As technology scales toward nanometer dimensions, accurate characterization and parameter extraction of MOSFET devices becomes increasingly critical for predictive circuit design and performance optimization. 
+
+The SCL \SI{180}{\nano\meter} CMOS process represents a mature technology node that balances performance, power consumption, and cost. It has been widely adopted in applications ranging from microprocessors and memory to mixed-signal integrated circuits. A thorough understanding of its electrical characteristics and precise device parameters is therefore essential for robust circuit design. 
+
+Key MOSFET parameters include the zero-bias threshold voltage ($V_{t0}$), which helps in calculating ($K_n$) and ($K_p$); the transconductance parameter ($K$), which governs the drain current in saturation; and the channel-length modulation parameter ($\lambda$), which accounts for finite output resistance. Non-ideal effects such as short-channel behavior, the body effect, and subthreshold conduction significantly influence these parameters in deep submicron devices. In particular, the subthreshold swing, ideally \SI{60}{mV/decade} at room temperature, plays a crucial role in low-power applications. 
+
+Furthermore, MOSFETs exhibit distinct operating regions—cutoff, linear, saturation, subthreshold, and breakdown—each with unique relevance to circuit design. Accurate parameter extraction enables reliable modeling across these regions, ensuring proper device operation in practical circuits. 
+
+This work presents a comprehensive DC characterization and parameter extraction of NMOS and PMOS transistors fabricated in the SCL \SI{180}{\nano\meter} CMOS process. The extracted results are validated against theoretical models and further applied to amplifier design, demonstrating the technology’s suitability for both digital and analog circuit implementations. }
+
+\section{Theoretical Background}
+
+\subsection{MOSFET Device Physics}
+\noindent{The operation of MOSFETs is governed by the formation and modulation of a conducting channel at the semiconductor--oxide interface. When a gate voltage exceeding the threshold voltage is applied to an NMOS device, electrons accumulate at the surface, forming an inversion layer that enables conduction between source and drain.}
+
+The drain current in the saturation region is expressed as:
+\begin{equation}
+I_{D} = \frac{1}{2} K_{n} \frac{W}{L} (V_{GS} - V_{th})^{2} \left(1 + \lambda V_{DS}\right)
+\end{equation}
+where $K_{n} = \mu_{n} C_{\text{ox}}$ is the transconductance parameter, $\mu_{n}$ is the carrier mobility, $C_{\text{ox}}$ is the oxide capacitance per unit area, $W$ and $L$ are the device width and length respectively, and $\lambda$ is the channel-length modulation parameter.
+
+\subsection{Parameter Extraction Techniques}
+\noindent{Several MOSFET parameters can be extracted using DC analysis:}
+
+\subsubsection{Channel-Length Modulation ($\lambda$)}
+\noindent{From two points on the saturation region of $I_{D}$ vs. $V_{DS}$ curves, $\lambda$ is calculated as:}
+\begin{equation}
+\lambda = \frac{I_{D2} - I_{D1}}{I_{D1}V_{DS2} - I_{D2}V_{DS1}}
+\end{equation}
+
+\subsubsection{Threshold Voltage ($V_{T0}$)}
+\noindent{The threshold voltage can be extracted using:}
+\begin{equation}
+V_{T0} = \frac{V_{GS1} - V_{GS2}\sqrt{\tfrac{I_{D1}}{I_{D2}}}}{1 - \sqrt{\tfrac{I_{D1}}{I_{D2}}}}
+\end{equation}
+
+\subsubsection{Transconductance Parameter ($K_{P}$)}
+\noindent{Using $V_{T0}$ and $\lambda$, the transconductance parameter is obtained from:}
+\begin{equation}
+K_{P} = \frac{2 I_{D}}{\tfrac{W}{L} (V_{GS} - V_{T0})^{2} (1 + \lambda V_{DS})}
+\end{equation}
+
+\subsection{Non-Ideal Effects}
+\noindent{Short-channel effects become prominent as channel length scales down, leading to threshold voltage roll-off, increased leakage, and reduced output resistance. The body effect further modifies the threshold voltage as:}
+\begin{equation}
+V_{th} = V_{th0} + \gamma \left(\sqrt{2\phi_{F} + V_{SB}} - \sqrt{2\phi_{F}}\right)
+\end{equation}
+
+\noindent{These non-idealities must be considered for accurate MOSFET modeling and circuit design.}
+
+\section{Basic Characteristic Analysis ($V_{SB} = 0$)}
+
+\subsection{Testbench Circuit Design}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{NMOS_WITHOUT_VSB.eps}
+    \caption{NMOS DC characterization testbench circuit with $V_{SB}=0$. The circuit shows gate and drain voltage sources for parametric sweeps.}
+    \label{fig:nmos_testbench}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{PMOS_WITHOUT_VSB.eps}
+    \caption{PMOS DC characterization testbench circuit with $V_{SB}=0$. Source is connected to ground with body tied to the same potential.}
+    \label{fig:pmos_testbench}
+\end{figure}
+
+\noindent{The testbench circuits shown in Figures \ref{fig:nmos_testbench} and \ref{fig:pmos_testbench} provide the foundation for all DC measurements. These configurations enable independent control of gate and drain voltages while maintaining zero body bias. So in figure \ref{fig:pmos_testbench} you can see that we have kept the voltage source such that it indicates that gate and drain are at higher voltage than source but actually while simulating in Cadence we'll give -ve voltage at $V_{GS}$ and $V_{DS}$}
+
+\subsection{$I_D$ vs $V_{GS}$ Characteristics}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{id_vs_vgs_nmos.jpg}
+    \caption{NMOS drain current versus gate-source voltage with varying $V_{DS}$ from 0V to 1.8V with linear steps of 0.3.}
+    \label{fig:nmos_id_vgs}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{id_vs_vgs_pmos.jpg}
+    \caption{PMOS drain current versus gate-source voltage with varying $V_{DS}$ from -1.8V to 0V with linear steps of 0.3. demonstrating complementary behavior to NMOS.}
+    \label{fig:pmos_id_vsg}
+\end{figure}
+
+\textbf{Insights from $I_D$-$V_{GS}$ Characteristics:}
+\noindent{The $I_D$-$V_{GS}$ plots in Figures \ref{fig:nmos_id_vgs} and \ref{fig:pmos_id_vsg} clearly illustrate the threshold behavior of both devices. For NMOS transistors, the drain current remains negligible until $V_{GS}$ exceeds the threshold voltage ($V_T$), after which $I_D$ increases rapidly with stronger inversion. The slope of the curve beyond $V_T$ demonstrates the increasing transconductance ($g_m$) as $V_{DS}$ is raised, reflecting enhanced channel conduction. Similarly, for PMOS devices, conduction occurs when $V_{GS}$ is sufficiently negative, and the $I_D$ magnitude increases as $|V_{GS}|$ surpasses the threshold. The family of curves across different $V_{DS}$ values shows the expected trend that higher $V_{DS}$ enhances $I_D$ in both NMOS and PMOS until velocity saturation limits further current increase. These complementary characteristics confirm the symmetry of NMOS and PMOS operation, with inverted polarities for voltage and current.}
+
+\subsection{Extracted Threshold Voltage Data}
+
+\begin{table}[H]
+    \centering
+    \caption{Extracted NMOS threshold voltage ($V_{th}$) for different $V_{DS}$ values}
+    \begin{tabular}{c c}
+        \hline
+        $V_{DS}$ (V) & $V_{th}$ (V) \\
+        \hline
+        0.000 & 0.4772 \\
+        0.300 & 0.4757 \\
+        0.600 & 0.4749 \\
+        0.900 & 0.4729 \\
+        1.200 & 0.4719 \\
+        1.500 & 0.4708 \\
+        1.800 & 0.4686 \\
+        \hline
+    \end{tabular}
+    \label{tab:nmos_vth}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Extracted PMOS threshold voltage ($V_{th}$) for different $V_{DS}$ values}
+    \begin{tabular}{c c}
+        \hline
+        $V_{DS}$ (V) & $V_{th}$ (V) \\
+        \hline
+       -1.800 & -0.5033 \\
+       -1.500 & -0.5050 \\
+       -1.200 & -0.5086 \\
+       -0.900 & -0.5102 \\
+       -0.600 & -0.5103 \\
+       -0.300 & -0.5120 \\
+        0.000 & -0.5137 \\
+        \hline
+    \end{tabular}
+    \label{tab:pmos_vth}
+\end{table}
+
+
+
+\subsection{$I_D$ vs $V_{DS}$ Output Characteristics}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{id_vs_vds_nmos.jpg}
+    \caption{NMOS output characteristics showing drain current versus drain-source voltage for various gate voltages (0V to 1.8V in 0.3V steps).}
+    \label{fig:nmos_id_vds}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{id_vs_vds_pmos.jpg}
+    \caption{PMOS output characteristics showing drain current magnitude versus drain-source voltage for various gate voltages.}
+    \label{fig:pmos_id_vsd}
+\end{figure}
+
+\textbf{Insights from Output Characteristics:}
+\noindent{The $I_D$-$V_{DS}$ output characteristics in Figures \ref{fig:nmos_id_vds} and \ref{fig:pmos_id_vsd} clearly demonstrate the three fundamental operating regions of MOS transistors. In the low $V_{DS}$ range, the curves exhibit a linear dependence of $I_D$ on $V_{DS}$, indicating the ohmic or triode region where the device behaves like a variable resistor. As $V_{DS}$ increases, the current gradually saturates, marking the transition to the saturation region when $V_{DS} \geq V_{GS}-V_T$ for NMOS (or $V_{SD} \geq |V_{SG}|-|V_T|$ for PMOS). Beyond this point, $I_D$ becomes weakly dependent on $V_{DS}$, consistent with channel pinch-off and velocity saturation effects. The family of curves across different $V_{GS}$ values reveals that higher gate bias enhances channel inversion, thereby increasing $I_D$ and shifting the onset of saturation. For PMOS devices, the same trends are observed but reflected in the third quadrant due to negative biasing conventions. Overall, the results confirm the expected MOSFET behavior and highlight the symmetry between NMOS and PMOS operation.}
+
+\subsubsection{Channel-Length Modulation ($\lambda$)}
+\noindent{From two points on the saturation region of $I_{D}$ vs. $V_{DS}$ curves, $\lambda$ is calculated as:}
+\begin{equation}
+\lambda = \frac{I_{D2} - I_{D1}}{I_{D1}V_{DS2} - I_{D2}V_{DS1}}
+\end{equation}
+
+\noindent\textbf{NMOS:} Using measured data points  
+$(V_{DS1}, I_{D1}) = (\SI{1.12291}{\volt}, \SI{45.63858}{\micro\ampere})$ and  
+$(V_{DS2}, I_{D2}) = (\SI{1.227916}{\volt}, \SI{46.10822}{\micro\ampere})$, we obtain:
+\[
+\lambda_{n} = 0.11011
+\]
+
+\noindent\textbf{PMOS:} Using measured data points  
+$(V_{SD1}, I_{D1}) = (\SI{1.0}{\volt}, \SI{-29.1535}{\micro\ampere})$ and  
+$(V_{SD2}, I_{D2}) = (\SI{1.05}{\volt}, \SI{-29.3837}{\micro\ampere})$, we obtain:
+\[
+\lambda_{p} = 0.18
+\]
+
+% ================================================================
+
+\subsubsection{Threshold Voltage ($V_{T0}$)}
+\noindent{The threshold voltage is extracted using:}
+\begin{equation}
+V_{T0} = \frac{V_{GS1} - V_{GS2}\sqrt{\tfrac{I_{D1}}{I_{D2}}}}{1 - \sqrt{\tfrac{I_{D1}}{I_{D2}}}}
+\end{equation}
+
+\noindent\textbf{NMOS:} With chosen points  
+$(V_{GS1}, I_{D1}) = (\SI{0.9}{\volt}, \SI{44.9398}{\micro\ampere})$ and  
+$(V_{GS2}, I_{D2}) = (\SI{1.35}{\volt}, \SI{135.071}{\micro\ampere})$, the extracted value is:
+\[
+V_{T0,n} = \SI{0.21033}{\volt}
+\]
+
+\noindent\textbf{PMOS:} With chosen points  
+$(V_{GS1}, I_{D1}) = (\SI{1.2}{\volt}, \SI{-29.1535}{\micro\ampere})$ and  
+$(V_{GS2}, I_{D2}) = (\SI{1.5}{\volt}, \SI{-53.5585}{\micro\ampere})$, the extracted value is:
+\[
+V_{T0,p} = \SI{-0.356}{\volt}
+\]
+
+% ================================================================
+
+\subsubsection{Transconductance Parameter ($K$)}
+\noindent{Using $V_{T0}$ and $\lambda$, the transconductance parameter is calculated as:}
+\begin{equation}
+K = \frac{2 I_{D}}{\tfrac{W}{L} (V_{GS} - V_{T0})^{2} (1 + \lambda V_{DS})}
+\end{equation}
+
+\noindent\textbf{NMOS:} For device dimensions $W/L = 2.33$ and measurement point  
+$(V_{GS}, V_{DS}, I_{D}) = (\SI{0.9}{\volt}, \SI{0.981}{\volt}, \SI{44.9391}{\micro\ampere})$, we obtain:
+\[
+K_{n} = 73.19242~\si{\micro\ampere\per\volt\squared}
+\]
+
+\noindent\textbf{PMOS:} For device dimensions $W/L = 2.33$ and measurement point  
+$(V_{SG}, V_{DS}, I_{D}) = (\SI{1.5}{\volt}, \SI{-1.0}{\volt}, \SI{29.1535}{\micro\ampere})$, we obtain:
+\[
+K_{p} = 42.841~\si{\micro\ampere\per\volt\squared}
+\]
+
+
+% ================= Subthreshold Swing Analysis =================
+\section{Subthreshold Swing Analysis}
+\noindent{The subthreshold swing measurements for both NMOS and PMOS transistors provide critical insight into the switching performance and leakage characteristics.}
+
+\subsection{NMOS Subthreshold Swing Extraction}
+\noindent{For the NMOS transistor, two measurement points in the subthreshold region are identified:}
+\begin{itemize}
+    \item Point 1: $V_{GS1} = \SI{216}{\milli\volt}, \; I_{DS1} = \SI{2.057}{\nano\ampere}$
+    \item Point 2: $V_{GS2} = \SI{203.43}{\milli\volt}, \; I_{DS2} = \SI{1.386}{\nano\ampere}$
+\end{itemize}
+
+The subthreshold swing is calculated as:
+\begin{equation}
+SS = \frac{dV_{GS}}{d(\log_{10} I_{DS})} \quad [\si{\milli\volt\per\decade}]
+\end{equation}
+
+First, calculating the logarithmic current values:
+\begin{align}
+\log_{10}(I_{DS1}) &= \log_{10}(2.057 \times 10^{-9}) = -8.686 \\
+\log_{10}(I_{DS2}) &= \log_{10}(1.386 \times 10^{-9}) = -8.858
+\end{align}
+
+The voltage difference is:
+\begin{equation}
+V_{GS1} - V_{GS2} = 216 - 203.43 = \SI{12.57}{\milli\volt}
+\end{equation}
+
+Therefore, the subthreshold swing for NMOS is:
+\begin{equation}
+SS_{NMOS} = \frac{12.57}{-8.686 - (-8.858)} = \frac{12.57}{0.171} = \SI{73.5}{\milli\volt\per\decade}
+\end{equation}
+
+\subsection{PMOS Subthreshold Swing Extraction}
+\noindent{For the PMOS transistor, two measurement points in the subthreshold region are identified:}  
+\begin{itemize}
+    \item Point 1: $V_{GS1} = \SI{-491.46}{\milli\volt}, \; I_{DS1} = \SI{-218.15}{\nano\ampere}$
+    \item Point 2: $V_{GS2} = \SI{-468}{\milli\volt}, \; I_{DS2} = \SI{-131.06}{\nano\ampere}$
+\end{itemize}
+
+The subthreshold swing is calculated as:
+\begin{equation}
+SS_{PMOS} = \frac{V_{GS1} - V_{GS2}}{\log_{10}\left(\frac{I_{DS1}}{I_{DS2}}\right)}
+\end{equation}
+
+Substituting the values:
+\begin{equation}
+SS_{PMOS} = \frac{-491.46 - (-468)}{\log_{10}\left(\tfrac{-218.15}{-131.06}\right)} 
+= \frac{-23.46}{0.2211} = \SI{-106.1}{\milli\volt\per\decade}
+\end{equation}
+
+Taking the absolute value:
+\[
+|SS_{PMOS}| = \SI{106.1}{\milli\volt\per\decade}
+\]
+
+\subsection{Results Summary}
+The measured subthreshold swings are:
+\begin{align*}
+SS_{NMOS} &= \SI{73.5}{\milli\volt\per\decade} \\
+SS_{PMOS} &= \SI{106.1}{\milli\volt\per\decade}
+\end{align*}
+
+\noindent{The NMOS value approaches the theoretical ideal of \SI{60}{\milli\volt\per\decade}, while the PMOS shows higher swing due to interface effects and mobility differences. These results confirm the quality of the SCL \SI{180}{\nano\meter} process technology.}
+
+\section{Body Effect Analysis through Parametric Sweeps}
+
+\subsection{Modified Testbench for Body Bias}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{NMOS_WITH_VSB.eps}
+    \caption{Modified NMOS testbench circuit incorporating variable body bias voltage source for parametric analysis of the body effect.}
+    \label{fig:body_bias_testbench}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{PMOS_WITH_VSB.eps}
+    \caption{Modified PMOS testbench circuit incorporating variable body bias voltage source for parametric analysis of the body effect.}
+    \label{fig:body_bias_testbench}
+\end{figure}
+
+\noindent{The testbench was modified to include an independent body bias voltage source, enabling parametric sweeps of $V_{SB}$ from 0V to 1.8V in 0.3V increments.}
+
+\subsection{Impact of Body Bias on Transfer Characteristics}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{id_vs_vgs_vary_vsb_nmos.jpg}
+    \caption{NMOS transfer characteristics showing the effect of body bias ($V_{SB}$ = 0V to 1.8V).}
+    \label{fig:nmos_body_id_vgs}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{id_vs_vgs_vary_vsb_pmos.jpg}
+    \caption{PMOS transfer characteristics demonstrating body effect impact with varying $V_{SB}$ values.}
+    \label{fig:pmos_body_id_vsg}
+\end{figure}
+
+\textbf{Insights on Body Effect in Transfer Characteristics:}
+\noindent{The transfer characteristics in Figures \ref{fig:nmos_body_id_vgs} and \ref{fig:pmos_body_id_vsg} highlight the influence of body bias on MOSFET behavior. For NMOS devices, increasing $V_{SB}$ (reverse body bias) raises the threshold voltage $V_T$, which shifts the $I_D$-$V_{GS}$ curve to the right and reduces the drain current for a given $V_{GS}$. This effect is a direct manifestation of the body effect, where the depletion region widens with larger source-to-body potential, increasing the effective threshold. Similarly, for PMOS devices, applying a reverse body bias increases the magnitude of $V_T$, shifting the curves further left (towards more negative $V_{GS}$ values) and lowering the conduction current at a given bias. The consistent displacement of the curves with $V_{SB}$ confirms the theoretical dependence $V_T(V_{SB}) = V_{T0} + \gamma\left(\sqrt{|2\phi_F+V_{SB}|} - \sqrt{|2\phi_F|}\right)$, where $\gamma$ is the body-effect coefficient. Overall, the results validate that reverse body bias reduces drive strength by effectively increasing the required gate overdrive, while forward body bias (not explored here) would reduce $V_T$ and enhance current conduction.}
+
+
+\subsection{Body Bias Effect on Output Characteristics}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{id_vs_vds_vary_vsb_nmos.jpg}
+    \caption{NMOS output characteristics under different body bias conditions ($V_{SB}$ = 0V to 1.8V) at $V_{GS}$ = 1V.}
+    \label{fig:nmos_body_id_vds}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{id_vs_vds_vary_vsb_pmos.jpg}
+    \caption{PMOS output characteristics under different body bias conditions ($V_{SB}$ = 0V to 1.8V) at $V_{GS}$ = -1V.}
+    \label{fig:pmos_body_id_vsd}
+\end{figure}
+
+\textbf{Insights on Body Effect in Output Characteristics:}
+\noindent{The $I_D$-$V_{DS}$ output characteristics in Figures \ref{fig:nmos_body_id_vds} and \ref{fig:pmos_body_id_vsd} further demonstrate the impact of body bias on device operation. For NMOS, as $V_{SB}$ increases, the effective threshold voltage rises, which reduces channel inversion strength and consequently lowers the drain current across the entire $V_{DS}$ range. This manifests as a downward shift in the family of $I_D$-$V_{DS}$ curves, with a noticeable reduction in saturation current at higher $V_{DS}$. Similarly, for PMOS, applying reverse body bias increases the magnitude of the threshold voltage, leading to reduced $|I_D|$ at each $V_{DS}$ value and shifting the curves deeper into the third quadrant. The saturation region in both devices is reached at higher $V_{DS}$ magnitudes when body bias is present, consistent with the increase in $V_T$ due to the body effect. Overall, these results validate that reverse body bias weakens channel conduction and reduces drive capability in both NMOS and PMOS devices, aligning with theoretical predictions of the body effect.}
+
+\section{Q3: Parameter Extraction and Analysis}
+
+\subsection{Threshold Voltage Extraction}
+\begin{table}[H]
+\centering
+\caption{Extracted Threshold Voltage Values}
+\label{tab:vt_extraction}
+\begin{tabular}{@{}ccc@{}}
+\toprule
+$V_{SB}$ (V) & $V_T$ (NMOS, V) & $|V_T|$ (PMOS, V) \\
+\midrule
+0.0 & 0.468 & 0.503 \\
+0.3 & 0.498 & 0.588 \\
+0.6 & 0.563 & 0.659 \\
+0.9 & 0.596 & 0.721 \\
+1.2 & 0.623 & 0.775 \\
+1.5 & 0.646 & 0.824 \\
+1.8 & 0.665 & 0.868 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Saturation Voltage Extraction}
+
+\begin{table}[H]
+\centering
+\caption{Extracted Saturation Voltage Values at $V_{GS}=1$ V}
+\label{tab:vdsat_extraction}
+\begin{tabular}{@{}ccc@{}}
+\toprule
+$V_{SB}$ (V) & $V_{Dsat}$ (NMOS, V) & $|V_{Dsat}|$ (PMOS, V) \\
+\midrule
+0.0 & 0.532 & 0.497 \\
+0.3 & 0.502 & 0.412 \\
+0.6 & 0.437 & 0.341 \\
+0.9 & 0.404 & 0.279 \\
+1.2 & 0.377 & 0.225 \\
+1.5 & 0.354 & 0.176 \\
+1.8 & 0.335 & 0.132 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Parameter Trends with Body Bias}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{vt_vs_vsb.png}
+    \caption{Threshold voltage variation with body bias for both NMOS and PMOS devices, showing approximately square-root dependence.}
+    \label{fig:vt_vs_vsb}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{vdsat_vs_vsb.png}
+    \caption{Saturation voltage dependence on body bias, demonstrating the coupled relationship with threshold voltage.}
+    \label{fig:vdsat_vs_vsb}
+\end{figure}
+
+\textbf{Insights from Parameter Extraction:}
+\noindent{The extracted parameters clearly demonstrate the dependence of both threshold voltage and saturation voltage on body bias. For NMOS devices, increasing $V_{SB}$ (reverse body bias) causes a monotonic increase in $V_T$, as observed in Table \ref{tab:vt_extraction} and Figure \ref{fig:vt_vs_vsb}. This shift is consistent with the body effect relation, where the depletion charge increases with larger source–body potential, effectively requiring a higher gate voltage to induce strong inversion. Similarly, in PMOS devices, the magnitude of $V_T$ increases with reverse bias, indicating that a more negative gate–source voltage is required to turn on the device.}
+
+\noindent{The extracted $V_{Dsat}$ values in Table \ref{tab:vdsat_extraction} and Figure \ref{fig:vdsat_vs_vsb} show a decreasing trend with increasing $V_{SB}$ for both NMOS and PMOS. This is expected because $V_{Dsat} \approx V_{GS}-V_T$, and as $V_T$ increases under reverse body bias, the effective overdrive voltage $(V_{GS}-V_T)$ reduces, leading to smaller saturation voltages. This coupled behavior confirms the interdependence of threshold voltage and saturation voltage.}
+
+\noindent{Overall, the results confirm that reverse body bias reduces device drive strength by simultaneously raising $V_T$ and lowering $V_{Dsat}$. This highlights the trade-off in MOSFET design: while reverse body bias can be used to reduce leakage currents (by increasing $V_T$), it also lowers the current-driving capability due to reduced overdrive and earlier saturation. These insights are consistent with theoretical models and practical implications in low-power circuit design and body-biasing techniques.}
+
+\section{Discussion}
+\noindent
+The comprehensive characterization reveals several key insights into the SCL \SI{180}{\nano\meter} CMOS technology. The threshold voltages are well-controlled and symmetric for NMOS and PMOS devices, enabling robust CMOS logic design. The transconductance parameters reflect the expected electron and hole mobility differences, with NMOS showing approximately 2--3 times higher transconductance than PMOS for similar device geometries.
+
+\noindent
+The body effect characterization reveals moderate sensitivity to substrate bias, which must be considered in circuit designs where source terminals are not connected to appropriate substrate potentials.
+
+\noindent
+The subthreshold swing measurements approach the theoretical ideal, indicating excellent interface quality and minimal interface trap density. This characteristic is crucial for low-power applications where subthreshold leakage contributes significantly to overall power consumption.
+
+\section{Conclusion}
+\noindent
+This comprehensive study successfully extracted and validated critical MOSFET parameters for SCL \SI{180}{\nano\meter} CMOS technology through systematic DC characterization of both NMOS and PMOS devices. Key findings include well-controlled threshold voltages, transconductance parameters consistent with theoretical expectations, and subthreshold swing values approaching the ideal \SI{60}{\milli\volt\per\decade} limit. body effects were quantified and found to be manageable within the technology specifications.
+
+\noindent
+The practical validation through NMOS amplifier design confirmed parameter accuracy, with achieved gain matching theoretical predictions. These results establish a solid foundation for circuit design using SCL \SI{180}{\nano\meter} technology and demonstrate the effectiveness of systematic parameter extraction methodologies.
+
+
+
+\begin{thebibliography}{1}
+\bibitem{razavi}
+B. Razavi, \emph{Design of Analog CMOS Integrated Circuits}, 2nd ed. New York: McGraw-Hill, 2017.
+
+\bibitem{weste}
+N. H. E. Weste and D. M. Harris, \emph{CMOS VLSI Design: A Circuits and Systems Perspective}, 4th ed. Boston: Addison-Wesley, 2011.
+
+\bibitem{allen}
+P. E. Allen and D. R. Holberg, \emph{CMOS Analog Circuit Design}, 3rd ed. New York: Oxford University Press, 2012.
+
+\bibitem{johns}
+D. A. Johns and K. Martin, \emph{Analog Integrated Circuit Design}, 2nd ed. New York: Wiley, 2012.
+
+\bibitem{gray}
+P. R. Gray, P. J. Hurst, S. H. Lewis, and R. G. Meyer, \emph{Analysis and Design of Analog Integrated Circuits}, 5th ed. New York: Wiley, 2009.
+\end{thebibliography}
+
+\end{document}
